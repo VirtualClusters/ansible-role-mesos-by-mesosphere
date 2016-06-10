@@ -15,20 +15,33 @@
 - name: install mesos
   apt: pkg=mesos state=present update_cache=yes
 
+# It seems zookeeper is not installed on Ubuntu Trusty, manual patch for zk installation
+- name: install zookeeperd if missing (on trusty)
+  apt: pkg=zookeeperd state=present
+  when: ansible_distribution_release == 'trusty'
+  tags:
+    - zookeeperd
+
+# Confirm if it won't work
 - name: update /etc/hosts
   template: src=hosts.j2 dest=/etc/hosts backup=yes
-  when: update_hosts == "yes"
+#  when: update_hosts == "yes"
+# reference: https://gist.github.com/rothgar/8793800
+  when: hostvars[item].ansible_Default_ipv4.address is defined
+  with_items: groups['all']
   tags:
     - hosts
 
+# 
 - name: myid var
   set_fact: myid="{{ myid | int + 1 }}"
+  when: myid is defined
   tags:
     - myid
 
 - name: myid
   lineinfile: dest=/etc/zookeeper/conf/myid regexp="^[0-9]*" line="{{ myid }}"
-  when: master_or_slave == "master"
+  when: master_or_slave == "master" and myid is defined
   tags:
     - myid
 

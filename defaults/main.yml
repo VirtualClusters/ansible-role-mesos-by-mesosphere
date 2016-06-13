@@ -9,3 +9,9 @@ apt_key_server: "keyserver.ubuntu.com"
 mesosphere_apt_url: "http://repos.mesosphere.com/"
 DISTRO: "{{ ansible_distribution | lower }}"
 CODENAME: "{{ansible_distribution_release|lower}}"
+
+# https://github.com/AnsibleShipyard/ansible-zookeeper/blob/06f703ca1cc53c84a14e552e4495e99a4055aea3/defaults/main.yml
+# List of dict (i.e. {zookeeper_hosts:[{host:,id:},{host:,id:},...]})
+zookeeper_hosts:
+  - host: "{{inventory_hostname}}" # the machine running
+    id: 1

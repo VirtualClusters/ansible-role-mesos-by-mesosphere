@@ -25,25 +25,37 @@
 # Confirm if it won't work
 - name: update /etc/hosts
   template: src=hosts.j2 dest=/etc/hosts backup=yes
-#  when: update_hosts == "yes"
+  when: update_hosts == "yes"
 # reference: https://gist.github.com/rothgar/8793800
-  when: hostvars[item].ansible_Default_ipv4.address is defined
-  with_items: groups['all']
+#  when: hostvars[item].ansible_Default_ipv4.address is defined
+#  with_items: groups['all']
   tags:
     - hosts
 
 # 
-- name: myid var
-  set_fact: myid="{{ myid | int + 1 }}"
-  when: myid is defined
-  tags:
-    - myid
+#- name: myid var
+#  set_fact: myid="{{ myid | int + 1 }}"
+#  when: myid is defined
+#  tags:
+#    - myid
 
-- name: myid
-  lineinfile: dest=/etc/zookeeper/conf/myid regexp="^[0-9]*" line="{{ myid }}"
-  when: master_or_slave == "master" and myid is defined
-  tags:
-    - myid
+#- name: myid
+#  lineinfile: dest=/etc/zookeeper/conf/myid regexp="^[0-9]*" line="{{ myid }}"
+#  when: master_or_slave == "master" and myid is defined
+#  tags:
+#    - myid
+
+- name: remove myid
+  file: path=/etc/zookeeper/conf/myid state=absent
+  tags: remove-myid
+
+- name: myid update from ansibleshipyad
+  template: src=myid.j2 dest=/etc/zookeeper/conf/myid
+  when: master_or_slave == "master"
+  tags: myid2
+  notify:
+    - Restart zookeeper
+# Later, need to clean up commented lines
 
 - name: set zoo.cfg.template
   template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg.template backup=yes
@@ -61,6 +73,11 @@
 #  when: master_or_slave == "master"
 #  tags:
 #    - zoo.cfg
+
+- name: remove zoo.cfg before copying
+  file: path=/etc/zookeeper/conf/zoo.cfg state=absent
+  when: master_or_slave == "master"
+  tags: remove-zoo.cfg
 
 - name: Add lines in zoo.cfg.template to zoo.cfg
   shell: "cat /etc/zookeeper/conf/zoo.cfg.template >> /etc/zookeeper/conf/zoo.cfg"

@@ -15,3 +15,4 @@ CODENAME: "{{ansible_distribution_release|lower}}"
 zookeeper_hosts:
   - host: "{{inventory_hostname}}" # the machine running
     id: 1
+zk.dataDir: /var/zookeeper

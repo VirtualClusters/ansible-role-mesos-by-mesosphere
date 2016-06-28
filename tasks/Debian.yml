@@ -55,6 +55,14 @@
   tags: myid2
   notify:
     - Restart zookeeper
+
+- name: myid update in dataDir
+  template: src=myid.j2 dest={{ zk.dataDir }}/myid
+  when: master_or_slave == "master"
+  tags: myid2
+  notify:
+    - Restart zookeeper
+
 # Later, need to clean up commented lines
 
 - name: set zoo.cfg.template

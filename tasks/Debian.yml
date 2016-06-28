@@ -56,8 +56,13 @@
   notify:
     - Restart zookeeper
 
+- name: create dataDir if not exist
+  file: path={{ zookeeper_dataDir }} state=directory owner={{ zookeeper_owner }} group={{ zookeeper_group }}
+  when: master_or_slave == "master"
+  tags: dataDir
+  
 - name: myid update in dataDir
-  template: src=myid.j2 dest={{ zk.dataDir }}/myid
+  template: src=myid.j2 dest={{ zookeeper_dataDir }}/myid
   when: master_or_slave == "master"
   tags: myid2
   notify:

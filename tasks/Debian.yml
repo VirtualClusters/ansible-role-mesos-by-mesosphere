@@ -62,7 +62,7 @@
   tags: dataDir
   
 - name: myid update in dataDir
-  template: src=myid.j2 dest={{ zookeeper_dataDir }}/myid
+  template: src=myid.j2 dest={{ zookeeper_dataDir }}/myid owner={{ zookeeper_owner }} group={{ zookeeper_group }}
   when: master_or_slave == "master"
   tags: myid2
   notify:
@@ -71,10 +71,10 @@
 # Later, need to clean up commented lines
 
 - name: set zoo.cfg.template
-  template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg.template backup=yes
+  template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg backup=yes
   when: master_or_slave == "master"
   tags:
-    - zoo.cfg
+    - zoo.cfg2
 
 #- name: Add lines in zoo.cfg.template to zoo.cfg
 #  blockinfile:

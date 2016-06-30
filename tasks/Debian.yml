@@ -87,10 +87,10 @@
 #  tags:
 #    - zoo.cfg
 
-- name: remove zoo.cfg before copying
-  file: path=/etc/zookeeper/conf/zoo.cfg state=absent
-  when: master_or_slave == "master"
-  tags: remove-zoo.cfg
+#- name: remove zoo.cfg before copying
+#  file: path=/etc/zookeeper/conf/zoo.cfg state=absent
+#  when: master_or_slave == "master"
+#  tags: remove-zoo.cfg
 
 #- name: Add lines in zoo.cfg.template to zoo.cfg
 #  shell: "cat /etc/zookeeper/conf/zoo.cfg.template >> /etc/zookeeper/conf/zoo.cfg"

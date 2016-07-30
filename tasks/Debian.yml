@@ -2,7 +2,7 @@
 - name: Add apt-key
   apt_key: id={{ apt_key_id }} keyserver={{ apt_key_server }} state=present
 
-- name: Add mesosphere repo
+- name: Remove mesosphere repo
   apt_repository: repo='deb {{ mesosphere_apt_url }}/{{ DISTRO }} {{ CODENAME }} main' state=absent
   tags:
    - repo
